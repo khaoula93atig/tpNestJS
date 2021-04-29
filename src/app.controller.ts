@@ -1,9 +1,13 @@
 import { Body, Controller, Get, Param, Post, Query, Req } from '@nestjs/common';
 import { NOMEM } from 'dns';
 import {Request} from 'express';
+import { TodoStatusEnum } from './todo/enums/TodoStatusEnum';
+import { TodoService } from './todo/todo.service';
 @Controller()
 export class AppController {
+  constructor(private todoService: TodoService) {}
   users =['khaoula','lala','baba','mama'];
+
   @Get('user')
   getUsers(
     @Req() request : Request
@@ -29,4 +33,14 @@ export class AppController {
     return nom;
 
   }
+
+  @Get('count/:status')
+  countBystatus(
+    @Param('status') status: TodoStatusEnum
+  ): Promise<unknown> {
+    return this.todoService.countBystatus(status);
+  }
+
+
 }
+

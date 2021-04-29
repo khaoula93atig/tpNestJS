@@ -5,10 +5,18 @@ import { Todo } from './models/todo';
 import {v4 as uuidv4} from 'uuid';
 import { putTodo } from './DTO/update-todo-dto';
 import { patchtodo } from './DTO/patch-todo-dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TodoEntity } from './entities/todo.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TodoService {
     todos : Todo[] = [];
+
+    constructor(
+        @InjectRepository(TodoEntity)
+        private readonly todoRepository: Repository<TodoEntity>
+      ) {}
 
     getTodo():Todo[]{
         return this.todos;
@@ -69,4 +77,7 @@ export class TodoService {
         todo.status = newTodo.status ?? todo.status;
         return todo;
     }
+     async countBystatus (status : TodoStatusEnum){
+         return await this.todoRepository.count({status});
+     }
 }
